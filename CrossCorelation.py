@@ -11,50 +11,50 @@ class Main:
 
     def main(self):
         # File Loading and Padding
-        st.set_page_config(layout="wide")
+        # st.set_page_config(layout="wide")
 
-        col1, col2 = st.columns(2)
-        with col1:
-            data1, data2 = self.file_loader()
-            self.data1_len, self.data2_len = self.length(data1, data2)
-            data2_padded = self.padder(data2)
+        # col1, col2 = st.columns(2)
+        # with col1:
+        data1, data2 = self.file_loader()
+        self.data1_len, self.data2_len = self.length(data1, data2)
+        data2_padded = self.padder(data2)
 
-            st.title("Cross Correlation")
-            st.caption("Aditya Wardianto 07311940000001 - Biomodelling")
+        st.title("Cross Correlation")
+        st.caption("Aditya Wardianto 07311940000001 - Biomodelling")
 
-            # Time Lag
-            st.header("Time Lag")
-            self.t_lag = st.slider(label="Time Lag", min_value=-(self.data2_len-1), max_value=self.data2_len -
-                                   1, value=0, help="Slider to shift Data 2 position horizontaly")
-            data2_out = data2_padded[self.data2_len -
-                                     self.t_lag:2*self.data2_len-self.t_lag]
+        # Time Lag
+        st.header("Time Lag")
+        self.t_lag = st.slider(label="Time Lag", min_value=-(self.data2_len-1), max_value=self.data2_len -
+                                1, value=0, help="Slider to shift Data 2 position horizontaly")
+        data2_out = data2_padded[self.data2_len -
+                                    self.t_lag:2*self.data2_len-self.t_lag]
 
-            # Plotting Input
-            st.header("Input Plot")
-            chart_input = pd.DataFrame(np.hstack(
-                (data1.reshape(-1, 1), data2_out.reshape(-1, 1))), columns=['Data 1', 'Data 2'])
-            st.line_chart(chart_input)
+        # Plotting Input
+        st.header("Input Plot")
+        chart_input = pd.DataFrame(np.hstack(
+            (data1.reshape(-1, 1), data2_out.reshape(-1, 1))), columns=['Data 1', 'Data 2'])
+        st.line_chart(chart_input)
 
-            # Correlation
-            correlation = self.correlate(data1, data2_padded)
+        # Correlation
+        correlation = self.correlate(data1, data2_padded)
 
-            # Plotting Correlation
-            st.header("Correlation Plot")
-            chart_output = pd.DataFrame(correlation, columns=['Correlation'])
-            st.line_chart(chart_output)
+        # Plotting Correlation
+        st.header("Correlation Plot")
+        chart_output = pd.DataFrame(correlation, columns=['Correlation'])
+        st.line_chart(chart_output)
 
-            # Normalization
-            norm_correlation = self.normalize(correlation)
+        # Normalization
+        norm_correlation = self.normalize(correlation)
 
-            # Plotting Normalized Correlation
-            st.header("Normalization")
-            chart_norm = pd.DataFrame(norm_correlation, columns=[
-                                      'Normalized Correlation'])
-            st.line_chart(chart_norm)
+        # Plotting Normalized Correlation
+        st.header("Normalization")
+        chart_norm = pd.DataFrame(norm_correlation, columns=[
+                                    'Normalized Correlation'])
+        st.line_chart(chart_norm)
 
-        with col2:
-            st.write(pd.DataFrame(np.hstack((data1.reshape(-1, 1), data2_out.reshape(-1,
-                     1), correlation.reshape(-1,1)))), columns=['Data 1', 'Data 2', 'Correlation'])
+        # # with col2:
+        #     st.write(pd.DataFrame(np.hstack((data1.reshape(-1, 1), data2_out.reshape(-1,
+        #              1), correlation.reshape(-1,1)))), columns=['Data 1', 'Data 2', 'Correlation'])
 
     @st.cache(allow_output_mutation=True)
     def file_loader(self):

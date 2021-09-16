@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run Tugas.py
+web: sh setup.sh && streamlit run CrossCorelation.py
