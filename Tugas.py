@@ -5,7 +5,6 @@ import os
 import sys
 
 
-
 class Main:
     def __init__(self):
         pass
@@ -19,15 +18,15 @@ class Main:
         st.title("Cross Correlation")
         st.caption("Aditya Wardianto 07311940000001 - Biomodelling")
 
-        col1,col2 = st.columns(2)
+        col1, col2 = st.columns(2)
         # Time Lag
-     
+
         with st.echo():
             self.t_lag = st.slider(label="Time Lag", min_value=-(self.data2_len-1), max_value=self.data2_len -
-                                1, value=0, help="Slider to shift Data 2 position horizontaly")
+                                   1, value=0, help="Slider to shift Data 2 position horizontaly")
             data2_out = data2_padded[self.data2_len -
-                                    self.t_lag:2*self.data2_len-self.t_lag]
-        
+                                     self.t_lag:2*self.data2_len-self.t_lag]
+
             # Plotting Input
             chart_input = pd.DataFrame(np.hstack(
                 (data1.reshape(-1, 1), data2_out.reshape(-1, 1))), columns=['Data 1', 'Data 2'])
@@ -35,8 +34,8 @@ class Main:
 
         # Correlation
         correlation = self.correlate(data1, data2_padded)
-      
-        #Plotting Correlation
+
+        # Plotting Correlation
         chart_output = pd.DataFrame(correlation, columns=['Correlation'])
         st.line_chart(chart_output)
 
