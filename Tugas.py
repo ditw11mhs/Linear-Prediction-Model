@@ -11,6 +11,8 @@ class Main:
 
     def main(self):
         # File Loading and Padding
+        root = os.path.dirname(sys.argv[0])
+        st.write(root)
         data1, data2 = self.file_loader()
         self.data1_len, self.data2_len = self.length(data1, data2)
         data2_padded = self.padder(data2)
