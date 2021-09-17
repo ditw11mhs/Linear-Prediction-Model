@@ -10,8 +10,19 @@ class Main:
         pass
 
     def main(self):
+        self.deploy = True
+
+        # Page Configuration
+
+        if self.deploy:
+            favicon_path = r"app/Data/favicon-web.ico"
+        else:
+            favicon_path = r"Data\favicon.ico"
+
+        st.set_page_config(
+            page_title='Tugas Cross Correlation Biomodelling ITS', page_icon=favicon_path)
+
         # File Loading and Padding
-        # st.set_page_config(layout="wide")
 
         # col1, col2 = st.columns(2)
         # with col1:
@@ -25,9 +36,9 @@ class Main:
         # Time Lag
         st.header("Time Lag")
         self.t_lag = st.slider(label="Time Lag", min_value=-(self.data2_len-1), max_value=self.data2_len -
-                                1, value=0, help="Slider to shift Data 2 position horizontaly")
+                               1, value=0, help="Slider to shift Data 2 position horizontaly")
         data2_out = data2_padded[self.data2_len -
-                                    self.t_lag:2*self.data2_len-self.t_lag]
+                                 self.t_lag:2*self.data2_len-self.t_lag]
 
         # Plotting Input
         st.header("Input Plot")
@@ -49,7 +60,7 @@ class Main:
         # Plotting Normalized Correlation
         st.header("Normalization")
         chart_norm = pd.DataFrame(norm_correlation, columns=[
-                                    'Normalized Correlation'])
+            'Normalized Correlation'])
         st.line_chart(chart_norm)
 
         # # with col2:
@@ -59,13 +70,12 @@ class Main:
     @st.cache(allow_output_mutation=True)
     def file_loader(self):
 
-        # Deployment
-        path1 = r'/app/Data/test.txt'
-        path2 = r'/app/Data/test2.txt'
-
-        # Local
-        # path1 = r'Data\test.txt'
-        # path2 = r'Data\test2.txt'
+        if self.deploy:
+            path1 = r'/app/Data/test.txt'
+            path2 = r'/app/Data/test2.txt'
+        else:
+            path1 = r'Data\test.txt'
+            path2 = r'Data\test2.txt'
 
         data1 = np.loadtxt(path1)
         data2 = np.loadtxt(path2)
