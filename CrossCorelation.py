@@ -20,7 +20,7 @@ class Main:
         data2_padded = self.padder(data2)
 
         st.title("Cross Correlation")
-        st.caption("Aditya Wardianto 07311940000001 - Biomodelling")
+        st.caption("Aditya Wardianto 07311940000001 - Biomodelling ITS")
 
         # Time Lag
         st.header("Time Lag")
