@@ -15,9 +15,9 @@ class Main:
         # Page Configuration
 
         if self.deploy:
-            favicon_path = r"app/Data/favicon-web.ico"
+            favicon_path = r"/app/Data/favicon-web.ico"
         else:
-            favicon_path = r"Data\favicon.ico"
+            favicon_path = r"Data\favicon-web.ico"
 
         st.set_page_config(
             page_title='Tugas Cross Correlation Biomodelling ITS', page_icon=favicon_path)
