@@ -53,11 +53,12 @@ class Main:
 
         # Correlation
         correlation = self.correlate(data1, data2_padded)
-        st.header("Correlation Plot")
+        
 
         col3, col4 = st.columns(2)
         with col3:
             # Plotting Correlation
+            st.header("Correlation Plot")
             chart_output = pd.DataFrame({'Correlation': correlation})
             st.line_chart(chart_output)
 
