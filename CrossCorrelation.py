@@ -72,6 +72,7 @@ class Main:
             st.line_chart(chart_norm)
 
         with col4:
+            st.header('Data Table')
             st.write(pd.DataFrame({
                 'Data 1': data1,
                 'Data 2': data2_out,
