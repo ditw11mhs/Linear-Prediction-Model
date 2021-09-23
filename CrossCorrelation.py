@@ -20,18 +20,17 @@ class Main:
             favicon_path = r"Data\favicon-web.ico"
 
         st.set_page_config(
-            page_title='Tugas Cross Correlation Biomodelling ITS', page_icon=favicon_path)
+            page_title='Tugas Cross Correlation Biomodelling ITS', page_icon=favicon_path, layout="wide")
 
         # File Loading and Padding
 
-        # col1, col2 = st.columns(2)
-        # with col1:
         data1, data2 = self.file_loader()
         self.data1_len, self.data2_len = self.length(data1, data2)
         data2_padded = self.padder(data2)
 
         st.title("Cross Correlation")
         st.caption("Aditya Wardianto 07311940000001 - Biomodelling ITS")
+        st.markdown("[Github Link](https://github.com/ditw11mhs/CrossCorrelation)")
 
         # Time Lag
         st.header("Time Lag")
@@ -40,32 +39,46 @@ class Main:
         data2_out = data2_padded[self.data2_len -
                                  self.t_lag:2*self.data2_len-self.t_lag]
 
+        col1, col2 = st.columns(2)
         # Plotting Input
-        st.header("Input Plot")
-        chart_input = pd.DataFrame(np.hstack(
-            (data1.reshape(-1, 1), data2_out.reshape(-1, 1))), columns=['Data 1', 'Data 2'])
-        st.line_chart(chart_input)
+        with col1:
+            st.header("Input Plot")
+            chart_input = pd.DataFrame(
+                {
+                    "Data 1": data1,
+                    "Data 2": data2
+                }
+            )
+            st.line_chart(chart_input)
 
         # Correlation
         correlation = self.correlate(data1, data2_padded)
-
-        # Plotting Correlation
         st.header("Correlation Plot")
-        chart_output = pd.DataFrame(correlation, columns=['Correlation'])
-        st.line_chart(chart_output)
+
+        col3, col4 = st.columns(2)
+        with col3:
+            # Plotting Correlation
+            chart_output = pd.DataFrame({'Correlation': correlation})
+            st.line_chart(chart_output)
 
         # Normalization
         norm_correlation = self.normalize(correlation)
 
-        # Plotting Normalized Correlation
-        st.header("Normalization")
-        chart_norm = pd.DataFrame(norm_correlation, columns=[
-            'Normalized Correlation'])
-        st.line_chart(chart_norm)
+        with col2:
+            # Plotting Normalized Correlation
+            st.header("Normalization")
+            chart_norm = pd.DataFrame(
+                {'Normalized Correlation': norm_correlation})
+            st.line_chart(chart_norm)
 
-        # # with col2:
-        #     st.write(pd.DataFrame(np.hstack((data1.reshape(-1, 1), data2_out.reshape(-1,
-        #              1), correlation.reshape(-1,1)))), columns=['Data 1', 'Data 2', 'Correlation'])
+        with col4:
+            st.write(pd.DataFrame({
+                'Data 1': data1,
+                'Data 2': data2_out,
+                'Correlation': correlation,
+                'Normalized Correlation': norm_correlation
+            }
+            ))
 
     @st.cache(allow_output_mutation=True)
     def file_loader(self):
@@ -79,9 +92,9 @@ class Main:
 
         # data1 = np.loadtxt(path1)
         # data2 = np.loadtxt(path2)
-        x = np.linspace(0, 25,5000)
-        data1 = np.sin(x)
-        data2 = np.sin(x)
+        x = np.linspace(0, 1, 10000)
+        data1 = np.sin(5*np.pi*x)
+        data2 = np.sin(5*np.pi*x)
 
         return data1, data2
 
@@ -107,7 +120,8 @@ class Main:
         return correlation
 
     def normalize(self, data):
-        return (data - np.mean(data))/np.std(data)
+        # return (data - np.mean(data))/np.std(data)
+        return (data-np.min(data))/(np.max(data)-np.min(data))
 
 
 if __name__ == "__main__":
