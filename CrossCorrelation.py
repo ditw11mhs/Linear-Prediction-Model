@@ -15,9 +15,9 @@ class Main:
         # Page Configuration
 
         if self.deploy:
-            favicon_path = r"app/Data/favicon-web.ico"
+            favicon_path = r"/app/Data/favicon-web.ico"
         else:
-            favicon_path = r"Data\favicon.ico"
+            favicon_path = r"Data\favicon-web.ico"
 
         st.set_page_config(
             page_title='Tugas Cross Correlation Biomodelling ITS', page_icon=favicon_path)
@@ -70,15 +70,18 @@ class Main:
     @st.cache(allow_output_mutation=True)
     def file_loader(self):
 
-        if self.deploy:
-            path1 = r'/app/Data/test.txt'
-            path2 = r'/app/Data/test2.txt'
-        else:
-            path1 = r'Data\test.txt'
-            path2 = r'Data\test2.txt'
+        # if self.deploy:
+        #     path1 = r'/app/Data/test.txt'
+        #     path2 = r'/app/Data/test2.txt'
+        # else:
+        #     path1 = r'Data\test.txt'
+        #     path2 = r'Data\test2.txt'
 
-        data1 = np.loadtxt(path1)
-        data2 = np.loadtxt(path2)
+        # data1 = np.loadtxt(path1)
+        # data2 = np.loadtxt(path2)
+        x = np.linspace(0, 25,5000)
+        data1 = np.sin(x)
+        data2 = np.sin(x)
 
         return data1, data2
 
