@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "crosscorrelation"
+version = "0.1.0"
+description = ""
+authors = ["Aditya Wardianto <adityawardianto.19073@mhs.its.ac.id>"]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.11"
+numpy = "^1.21.2"
+pandas = "^1.3.3"
+streamlit = "^0.89.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
