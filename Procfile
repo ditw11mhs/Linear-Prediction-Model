@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run frontend.py
+web: sh setup.sh && streamlit run frontend_linear_prediction.py

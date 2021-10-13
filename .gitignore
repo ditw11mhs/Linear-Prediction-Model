@@ -1,2 +1,3 @@
-GroundtTruth.pascal
-Test.pascal
+Data/raw_data.wav
+Data/predicted_data.wav
+Dev.ipynb
