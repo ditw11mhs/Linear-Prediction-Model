@@ -45,7 +45,7 @@ class Main:
         data_path = os.path.join("Data", "Print_13_v2_PCG_RV.txt")
         self.linear_model = LinearModelPrediction(data_path)
 
-        self.color = ["#8CDFD6", "#1E555C", "#F4D8CD", "#EDB183", "#F15152", "#FFFFFF"]
+        self.color = ["#99c9a8", "#cee7c1", "#a6d9c9", "#53aaba", "#2a85a3", "#7cd0d2","#31d2d8"]
         # Raw Data Plot
         st.header("Raw Signal")
         self.plot_raw_data()
@@ -82,15 +82,16 @@ class Main:
         freq_resp_df = df(
             {
                 "Frequency (Ohm)": self.linear_model.theta.flatten(),
-                "Magnitude (dB)": self.linear_model.freq_resp.flatten(),
+                "H(z)": self.linear_model.freq_resp.flatten(),
+                "A(z)": self.linear_model.a.flatten(),
             },
             dtype=self.dtype,
         )
         freq_resp_fig = px.line(
             freq_resp_df,
             x="Frequency (Ohm)",
-            y=["Magnitude (dB)"],
-            color_discrete_sequence=[self.color[5]],
+            y=["H(z)","A(z)"],
+            color_discrete_sequence=[self.color[5],self.color[6]],
         )
         freq_resp_fig.update_layout(yaxis_title="Magnitude (dB)")
         st.plotly_chart(freq_resp_fig, use_container_width=True)

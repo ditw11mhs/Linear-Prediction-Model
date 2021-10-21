@@ -83,8 +83,10 @@ def _mag_theta(M, a_coef):
         exp_min_j_theta_coef.astype(np.complex64),
     )
     H_z = 1 / (1 - a_coef_dot)
+    A_z = 1/H_z
     mag_h_z = np.abs(H_z)
-    return theta, mag_h_z
+    mag_a_z = np.abs(A_z)
+    return theta, mag_h_z, mag_a_z
 
 
 @njit
@@ -159,7 +161,7 @@ class LinearModelPrediction:
         self.mse = _mse(self.error_modelling)
 
     def find_freq_resp(self):
-        self.theta, self.freq_resp = _mag_theta(self.M, self.a_coef)
+        self.theta, self.freq_resp,self.a = _mag_theta(self.M, self.a_coef)
 
     def to_sound(self):
         norm_raw_data, norm_predicted_data = _norm_to_wav(
