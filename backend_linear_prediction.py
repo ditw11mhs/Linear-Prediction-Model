@@ -3,6 +3,7 @@ import streamlit as st
 import scipy.io.wavfile as wav
 import os
 from numba import jit, njit
+import pyaudio,wave
 
 
 @st.cache(max_entries=10, ttl=600)
@@ -14,7 +15,7 @@ def _load_data(data_path):
     return raw_data_x, raw_data_y, padded_data_y
 
 
-@st.cache(max_entries=10, ttl=600)
+# @st.cache(max_entries=10, ttl=600)
 def _auto_correlation(M, raw_data_y, padded_data_y):
     # Meyimpan data raw
     data = raw_data_y
@@ -109,6 +110,57 @@ def _norm_to_wav(raw_data_y, x_predict):
 
     return norm_raw_data, norm_predicted_data
 
+class AudioWrapper(object):
+    def __init__(self,duration,rate):
+        self.format = pyaudio.paInt16
+        self.channels = 1
+        self.sample_rate = rate
+        self.chunk = 1024
+        self.duration = duration
+        self.path = os.path.join("sound","recorded.wav")
+        self.device = 0
+        self.frames = []
+        self.audio = pyaudio.PyAudio()
+        
+        
+    def record(self):
+        # start Recording
+        self.audio = pyaudio.PyAudio()
+        stream = self.audio.open(
+                        format=self.format,
+                        channels=self.channels,
+                        rate=self.sample_rate,
+                        input=True,
+                        frames_per_buffer=self.chunk,
+                        input_device_index=self.device)
+        self.frames = []
+        for i in range(0, int(self.sample_rate / self.chunk * self.duration)):
+            data = stream.read(self.chunk)
+            self.frames.append(data)
+        # stop Recording
+        stream.stop_stream()
+        stream.close()
+        self.audio.terminate()
+        self.save()
+
+    def norm(self,X,max,min):
+        X_std = (X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0))
+        X_scaled = X_std * (max - min) + min
+        return X_scaled
+    
+    def save(self):
+        waveFile = wave.open(self.path, 'wb')
+        waveFile.setnchannels(self.channels)
+        waveFile.setsampwidth(self.audio.get_sample_size(self.format))
+        waveFile.setframerate(self.sample_rate)
+        waveFile.writeframes(b''.join(self.frames))
+        waveFile.close()
+        
+        _,data = wav.read(self.path)
+        data = self.norm(data,1,-1)
+        time_array = np.linspace(0,self.duration,data.shape[0])
+        data_to_txt = np.vstack((time_array,data)).T
+        np.savetxt('recorded.txt',data_to_txt, delimiter='\t')
 
 class LinearModelPrediction:
     def __init__(self, data_path) -> None:
@@ -124,6 +176,7 @@ class LinearModelPrediction:
 
         # Mencari matriks Rxx-
         self.rxx_matrix = _get_rxx_matrix(self.rxx)
+        print(self.rxx_matrix)
 
     def find_a_coef(self):
 

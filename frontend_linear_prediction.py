@@ -4,7 +4,7 @@ from pandas import DataFrame as df
 import plotly.express as px
 import numpy as np
 import os
-from backend_linear_prediction import LinearModelPrediction
+from backend_linear_prediction import AudioWrapper, LinearModelPrediction
 
 
 class Main:
@@ -17,10 +17,17 @@ class Main:
             page_icon=":chart_with_upwards_trend:",
             layout="wide",
         )
+        with st.form("Recording"):
+            c1,c2,_,_ = st.columns(4)
+            duration = c1.number_input("Duration",1,100,3)
+            rate = c2.number_input("Sample Rate",1,100000,3000)
+            if st.form_submit_button("record"):
+                audio =AudioWrapper(duration,rate)
+                audio.record()
 
         self.input()
-
-        self.output()
+        if st.session_state["run"]==True:
+            self.output()
 
     def input(self) -> None:
         if "run" not in st.session_state:
@@ -38,21 +45,31 @@ class Main:
             )
             if st.form_submit_button("Run"):
                 st.session_state["run"] = True
+                
 
     def output(self) -> None:
         st.title("Linear Prediction Model")
         # Class Initialization
-        data_path = os.path.join("Data", "Print_13_v2_PCG_RV.txt")
+        data_path = "recorded.txt"
+        # data_path = os.path.join("Data", "Print_13_v2_PCG_RV.txt")
         self.linear_model = LinearModelPrediction(data_path)
 
-        self.color = ["#99c9a8", "#cee7c1", "#a6d9c9", "#53aaba", "#2a85a3", "#7cd0d2","#31d2d8"]
+        self.color = [
+            "#99c9a8",
+            "#cee7c1",
+            "#a6d9c9",
+            "#53aaba",
+            "#2a85a3",
+            "#7cd0d2",
+            "#31d2d8",
+        ]
         # Raw Data Plot
         st.header("Raw Signal")
         self.plot_raw_data()
 
         if st.session_state["run"]:
             self.style_format = "{:.5f}"
-            self.dtype = np.float16
+            self.dtype = np.float64
             # Find rxx and RXX
             self.find_rxx_Rxx()
 
@@ -90,8 +107,8 @@ class Main:
         freq_resp_fig = px.line(
             freq_resp_df,
             x="Frequency (Ohm)",
-            y=["H(z)","A(z)"],
-            color_discrete_sequence=[self.color[5],self.color[6]],
+            y=["H(z)", "A(z)"],
+            color_discrete_sequence=[self.color[5], self.color[6]],
         )
         freq_resp_fig.update_layout(yaxis_title="Magnitude (dB)")
         st.plotly_chart(freq_resp_fig, use_container_width=True)
@@ -221,8 +238,12 @@ class Main:
             if not st.session_state["no_df"]:
                 inv_Rxx_df = df(
                     self.linear_model.inv_rxx_matrix.astype(np.float32),
-                    index=np.arange(self.linear_model.inv_rxx_matrix.shape[0]).astype(np.uint16),
-                    columns=np.arange(self.linear_model.inv_rxx_matrix.shape[1]).astype(np.uint16),
+                    index=np.arange(self.linear_model.inv_rxx_matrix.shape[0]).astype(
+                        np.uint16
+                    ),
+                    columns=np.arange(self.linear_model.inv_rxx_matrix.shape[1]).astype(
+                        np.uint16
+                    ),
                     dtype=self.dtype,
                 )
                 st.dataframe(inv_Rxx_df.style.format(self.style_format))
@@ -233,7 +254,9 @@ class Main:
             st.subheader("a Coefficient")
             a_coef_df = df(
                 self.linear_model.a_coef,
-                index=np.arange(len(self.linear_model.a_coef.flatten())).astype(np.uint16),
+                index=np.arange(len(self.linear_model.a_coef.flatten())).astype(
+                    np.uint16
+                ),
                 columns=["a"],
                 dtype=self.dtype,
             )
@@ -248,7 +271,7 @@ class Main:
             rxx_df = df(
                 self.linear_model.rxx.flatten().astype(np.float32),
                 columns=["rxx"],
-                index = np.arange(len(self.linear_model.rxx.flatten())).astype(np.uint16),
+                index=np.arange(len(self.linear_model.rxx.flatten())).astype(np.uint16),
                 dtype=self.dtype,
             )
             st.dataframe(rxx_df.style.format(self.style_format))
@@ -257,8 +280,12 @@ class Main:
             if not st.session_state["no_df"]:
                 Rxx_df = df(
                     self.linear_model.rxx_matrix.astype(np.float32),
-                    index=np.arange(self.linear_model.rxx_matrix.shape[0]).astype(np.uint16),
-                    columns=np.arange(self.linear_model.rxx_matrix.shape[1]).astype(np.uint16),
+                    index=np.arange(self.linear_model.rxx_matrix.shape[0]).astype(
+                        np.uint16
+                    ),
+                    columns=np.arange(self.linear_model.rxx_matrix.shape[1]).astype(
+                        np.uint16
+                    ),
                     dtype=self.dtype,
                 )
                 st.dataframe(Rxx_df)
@@ -269,3 +296,5 @@ class Main:
 if __name__ == "__main__":
     main = Main()
     main.main()
+    
+    
