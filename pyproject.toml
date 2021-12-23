@@ -13,7 +13,7 @@ numpy = ">=1.17"
 scipy = "^1.7.1"
 numba = "^0.54.1"
 pipwin = "^0.5.1"
-pyaudio = {path = "lib/PyAudio-0.2.11-cp39-cp39-win_amd64.whl"}
+pyaudio = "0.2.11"
 
 [tool.poetry.dev-dependencies]
 
